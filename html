@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Physiotherapy Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; direction: ltr; }
+    h2, h3 { color: #2c3e50; }
+    .section {
+      background: white; padding: 20px; margin-bottom: 20px;
+      border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label, textarea, select, button {
+      width: 100%; margin: 10px 0; padding: 10px;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    button {
+      background-color: #27ae60; color: white;
+      border: none; cursor: pointer;
+    }
+    button:hover { background-color: #219150; }
+    iframe { width: 100%; height: 250px; margin-top: 10px; border: none; }
+  </style>
+</head>
+<body>
+
+  <h2>AI Physiotherapy Tool</h2>
+
+  <div class="section">
+    <label>Select Language:</label>
+    <select id="langSelect" onchange="changeLanguage()">
+      <option value="en">English</option>
+      <option value="ur">اردو</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <h3 id="step1">1. Describe Your Symptoms</h3>
+    <textarea id="symptoms" rows="4" placeholder="e.g., I feel pain in neck and knees..."></textarea>
+    <button onclick="analyze()">Analyze</button>
+  </div>
+
+  <div class="section" id="results" style="display:none;">
+    <h3>Results:</h3>
+    <div id="outputArea"></div>
+  </div>
+
+  <script>
+    const conditions = [
+      {
+        name_en: "Lower Back Pain",
+        name_ur: "کمر درد",
+        keywords: ["lower back", "back pain", "کمر"],
+        reason_en: "Often caused by poor posture or lifting heavy items.",
+        reason_ur: "عام طور پر غلط بیٹھنے یا بھاری وزن اٹھانے سے ہوتا ہے۔",
+        treatment_en: "Try pelvic tilts and bridges.",
+        treatment_ur: "پیلوِک ورزشیں اور بریجز کریں۔",
+        video: "https://www.youtube.com/embed/K8HZtmoEJv0"
+      },
+      {
+        name_en: "Neck Pain",
+        name_ur: "گردن درد",
+        keywords: ["neck", "گردن"],
+        reason_en: "Often caused by poor posture or mobile use.",
+        reason_ur: "غلط بیٹھنے یا موبائل کے زیادہ استعمال سے ہوتا ہے۔",
+        treatment_en: "Do neck stretches and chin tucks.",
+        treatment_ur: "گردن کی ورزشیں اور چن ٹَکس کریں۔",
+        video: "https://www.youtube.com/embed/4BOTvaRaDjI"
+      },
+      {
+        name_en: "Knee Pain",
+        name_ur: "گھٹنے کا درد",
+        keywords: ["knee", "گھٹنے"],
+        reason_en: "Caused by weak muscles or injury.",
+        reason_ur: "کمزور پٹھوں یا چوٹ کی وجہ سے ہو سکتا ہے۔",
+        treatment_en: "Try quad sets and straight leg raises.",
+        treatment_ur: "کواڈ سیٹ اور ٹانگ سیدھی کرنے والی مشقیں کریں۔",
+        video: "https://www.youtube.com/embed/yQH8KqGgMLU"
+      }
+    ];
+
+    let language = "en";
+
+    function changeLanguage() {
+      language = document.getElementById("langSelect").value;
+    }
+
+    function analyze() {
+      const input = document.getElementById("symptoms").value.toLowerCase();
+      const outputArea = document.getElementById("outputArea");
+      outputArea.innerHTML = "";
+
+      let found = false;
+
+      conditions.forEach(cond => {
+        const match = cond.keywords.some(k => input.includes(k));
+        if (match) {
+          found = true;
+          const title = language === "en" ? cond.name_en : cond.name_ur;
+          const reason = language === "en" ? cond.reason_en : cond.reason_ur;
+          const treatment = language === "en" ? cond.treatment_en : cond.treatment_ur;
+
+          outputArea.innerHTML += `
+            <h4>${title}</h4>
+            <strong>Reason:</strong> ${reason}<br>
+            <strong>Treatment:</strong> ${treatment}<br>
+            <iframe src="${cond.video}" allowfullscreen></iframe><hr>
+          `;
+        }
+      });
+
+      if (!found) {
+        outputArea.innerHTML = language === "en"
+          ? "No matching condition found. Please describe more specifically."
+          : "کوئی مشابہ مسئلہ نہیں ملا۔ براہ کرم علامات واضح کریں۔";
+      }
+
+      document.getElementById("results").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
